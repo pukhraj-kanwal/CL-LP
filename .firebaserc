@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "cargolynx-main"
+  },
+  "targets": {
+    "cargolynx-main": {
+      "hosting": {
+        "main": [
+          "cargolynx-main"
+        ]
+      }
+    }
+  }
+}

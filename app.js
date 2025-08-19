@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initMobileMenu();
     initScrollAnimations();
     initPlatformDiagram();
+    initPlatformIllustration();
 });
 
 // Header scroll effect
@@ -257,17 +258,21 @@ function initScrollAnimations() {
     });
 }
 
-// Platform flow diagram animation
+// Platform flow diagram animation (legacy)
 function initPlatformDiagram() {
     const diagram = document.getElementById('platform-flow-diagram');
     if (!diagram) return;
     
-    // Create animated flow diagram
+    // Create animated flow diagram with enhanced content
     diagram.innerHTML = `
         <div class="flow-container">
-            <div class="flow-node shipper-node">
+            <div class="flow-node shipper-node" data-node="shipper">
                 <i class="fas fa-building"></i>
                 <span>Shipper</span>
+                <div class="node-details">
+                    <p>Direct access to verified carriers</p>
+                    <p>Real-time tracking & transparency</p>
+                </div>
             </div>
             
             <div class="flow-arrow">
@@ -276,9 +281,13 @@ function initPlatformDiagram() {
                 <div class="flow-label">Direct Connection</div>
             </div>
             
-            <div class="flow-node platform-node">
+            <div class="flow-node platform-node" data-node="platform">
                 <i class="fas fa-brain"></i>
                 <span>CargoLynx AI</span>
+                <div class="node-details">
+                    <p>Intelligent matching algorithm</p>
+                    <p>Automated optimization</p>
+                </div>
             </div>
             
             <div class="flow-arrow">
@@ -287,167 +296,180 @@ function initPlatformDiagram() {
                 <div class="flow-label">Intelligent Matching</div>
             </div>
             
-            <div class="flow-node carrier-node">
+            <div class="flow-node carrier-node" data-node="carrier">
                 <i class="fas fa-truck"></i>
                 <span>Carrier</span>
+                <div class="node-details">
+                    <p>Premium freight opportunities</p>
+                    <p>Instant payment options</p>
+                </div>
             </div>
         </div>
     `;
     
-    // Add CSS for the diagram
-    const style = document.createElement('style');
-    style.textContent = `
-        .flow-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 2rem;
-        }
-        
-        .flow-node {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .flow-node:hover {
-            transform: translateY(-4px);
-        }
-        
-        .flow-node i {
-            font-size: 3rem;
-            color: #FF6B35;
-        }
-        
-        .flow-node span {
-            font-weight: 600;
-            color: #323232;
-        }
-        
-        .flow-arrow {
-            position: relative;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .arrow-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: #FF6B35;
-            animation: flow 2s ease-in-out infinite;
-        }
-        
-        .arrow-head {
-            position: absolute;
-            right: 0;
-            width: 0;
-            height: 0;
-            border-left: 12px solid #FF6B35;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-        }
-        
-        .flow-label {
-            position: absolute;
-            top: -30px;
-            font-size: 0.875rem;
-            color: #959595;
-            white-space: nowrap;
-        }
-        
-        @keyframes flow {
-            0% {
-                background: linear-gradient(90deg, transparent 0%, #FF6B35 50%, transparent 100%);
-                background-size: 200% 100%;
-                background-position: -100% 0;
-            }
-            100% {
-                background-position: 100% 0;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .flow-container {
-                flex-direction: column;
-                gap: 2rem;
-            }
-            
-            .flow-arrow {
-                transform: rotate(90deg);
-                width: 100px;
-                height: 60px;
-            }
-        }
-        
-        /* Animation classes */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Mobile menu styles */
-        .mobile-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 1rem;
-            transform: translateY(-100%);
-            opacity: 0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-        
-        .mobile-menu.active {
-            display: block;
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .mobile-menu .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .mobile-menu .nav-cta {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .mobile-menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        
-        .mobile-menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .mobile-menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-    `;
+    // Add interactive functionality to nodes
+    const nodes = diagram.querySelectorAll('.flow-node');
     
-    document.head.appendChild(style);
+    // Add hover effect for node details
+    nodes.forEach(node => {
+        const details = node.querySelector('.node-details');
+        if (details) {
+            details.style.opacity = '0';
+            details.style.transform = 'translateY(10px)';
+            details.style.transition = 'all 0.3s ease';
+            details.style.marginTop = '10px';
+            
+            node.addEventListener('mouseenter', () => {
+                details.style.opacity = '1';
+                details.style.transform = 'translateY(0)';
+            });
+            
+            node.addEventListener('mouseleave', () => {
+                details.style.opacity = '0';
+                details.style.transform = 'translateY(10px)';
+            });
+        }
+    });
+    
+    // Animate nodes on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 200);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    nodes.forEach(node => {
+        node.style.opacity = '0';
+        node.style.transform = 'translateY(20px)';
+        node.style.transition = 'all 0.6s ease';
+        observer.observe(node);
+    });
+}
+
+// Platform Illustration Interactive Script
+function initPlatformIllustration() {
+    // Animate numbers on scroll
+    const animateNumbers = () => {
+        const numbers = document.querySelectorAll('.stat-number');
+        
+        numbers.forEach(number => {
+            const value = parseFloat(number.getAttribute('data-value'));
+            const isDecimal = value % 1 !== 0;
+            const duration = 2000;
+            const start = 0;
+            const increment = value / (duration / 16);
+            let current = start;
+            
+            const updateNumber = () => {
+                current += increment;
+                if (current < value) {
+                    number.textContent = isDecimal ? current.toFixed(1) : Math.floor(current);
+                    requestAnimationFrame(updateNumber);
+                } else {
+                    number.textContent = value;
+                    // Add suffix based on context
+                    if (number.parentElement.textContent.includes('Rate')) {
+                        number.setAttribute('data-suffix', '%');
+                    } else if (number.parentElement.textContent.includes('Reduction')) {
+                        number.setAttribute('data-suffix', '%');
+                    } else if (number.parentElement.textContent.includes('Billion')) {
+                        number.setAttribute('data-suffix', 'B');
+                    } else if (number.parentElement.textContent.includes('Seconds')) {
+                        number.setAttribute('data-suffix', 's');
+                    }
+                }
+            };
+            
+            updateNumber();
+        });
+    };
+    
+    // Intersection Observer for all animations
+    const observerOptions = {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // Trigger number animation for stats
+                if (entry.target.classList.contains('platform-stats')) {
+                    animateNumbers();
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements
+    const animatedElements = document.querySelectorAll('.flow-item, .process-steps, .platform-stats, .section-header');
+    animatedElements.forEach(el => {
+        observer.observe(el);
+    });
+    
+    // Flow item interactions
+    const flowItems = document.querySelectorAll('.flow-item');
+    const stepCards = document.querySelectorAll('.step-card');
+    
+    // Sync flow items with step cards
+    flowItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const step = this.getAttribute('data-step');
+            
+            // Update active states
+            flowItems.forEach(f => f.classList.remove('active'));
+            stepCards.forEach(s => s.classList.remove('active'));
+            
+            this.classList.add('active');
+            const correspondingStep = document.querySelector(`.step-card[data-step="${step}"]`);
+            if (correspondingStep) {
+                correspondingStep.classList.add('active');
+                correspondingStep.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    });
+    
+    // Step card interactions
+    stepCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const step = this.getAttribute('data-step');
+            
+            // Update active states
+            stepCards.forEach(s => s.classList.remove('active'));
+            flowItems.forEach(f => f.classList.remove('active'));
+            
+            this.classList.add('active');
+            const correspondingFlow = document.querySelector(`.flow-item[data-step="${step}"]`);
+            if (correspondingFlow) {
+                correspondingFlow.classList.add('active');
+            }
+        });
+    });
+    
+    // Add hover effect for connection lines
+    const connectionWrappers = document.querySelectorAll('.connection-wrapper');
+    connectionWrappers.forEach(wrapper => {
+        wrapper.addEventListener('mouseenter', function() {
+            const movingDot = this.querySelector('.moving-dot');
+            if (movingDot) {
+                movingDot.style.animationDuration = '1s';
+            }
+        });
+        
+        wrapper.addEventListener('mouseleave', function() {
+            const movingDot = this.querySelector('.moving-dot');
+            if (movingDot) {
+                movingDot.style.animationDuration = '3s';
+            }
+        });
+    });
 }
 
 // Add some interactive hover effects
